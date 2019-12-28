@@ -8,7 +8,7 @@
 import tensorflow as tf
 import numpy as np
 import time
-
+from PIL import Image
 from setup_cifar import CIFAR, CIFARModel
 from setup_mnist import MNIST, MNISTModel
 from setup_inception import ImageNet, InceptionModel
@@ -77,15 +77,25 @@ if __name__ == "__main__":
         timestart = time.time()
         adv = attack.attack(inputs, targets)
         timeend = time.time()
-        
+        for i in range(0,len(adv)) : 
+          data= adv[i]
+
+          rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+
+          im = Image.fromarray(rescaled)
+          im.save('\imges'+'test' + str(i)+'.png')
+			
+		
+			
+		
         print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
 
         for i in range(len(adv)):
-            print("Valid:")
-            show(inputs[i])
-            print("Adversarial:")
-            show(adv[i])
-            
+           # print("Valid:")
+            #show(inputs[i])
+            #print("Adversarial:")
+            #show(adv[i])
+           
             print("Classification:", model.model.predict(adv[i:i+1]))
 
             print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
