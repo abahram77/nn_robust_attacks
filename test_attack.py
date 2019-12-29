@@ -77,13 +77,13 @@ if __name__ == "__main__":
         timestart = time.time()
         adv = attack.attack(inputs, targets)
         timeend = time.time()
-        for i in range(0,len(adv)) : 
+        for i in range(0,len(adv)) :
           data= adv[i]
-
+          data = data.reshape(28,28)
           rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
           im = Image.fromarray(rescaled)
-          im.save('\imges'+'test' + str(i)+'.png')
+          im.save('imges'+'test' + str(i)+'.png')
 			
 		
 			
