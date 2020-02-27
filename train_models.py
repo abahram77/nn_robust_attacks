@@ -16,6 +16,17 @@ import tensorflow as tf
 from setup_mnist import MNIST
 from setup_cifar import CIFAR
 import os
+import tensorflow as tf
+import numpy as np
+import time
+from PIL import Image
+from setup_cifar import CIFAR, CIFARModel
+from setup_mnist import MNIST, MNISTModel
+from setup_inception import ImageNet, InceptionModel
+
+from l2_attack import CarliniL2
+from l0_attack import CarliniL0
+from li_attack import CarliniLi
 
 def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, init=None):
     """
@@ -44,8 +55,8 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     model.add(Dropout(0.5))
     model.add(Dense(params[5]))
     model.add(Activation('relu'))
-    model.add(Dense(10))
-    
+    # model.add(Dense(10))
+    model.add(Dense(4))
     if init != None:
         model.load_weights(init)
 
@@ -58,7 +69,45 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     model.compile(loss=fn,
                   optimizer=sgd,
                   metrics=['accuracy'])
-    
+
+  # here we have to 1.perturb train_data 2.change train_labels.
+   
+    with tf.Session() as sess:
+        data, model =  MNIST(), MNISTModel("models/mnist", sess)
+        #data, model =  CIFAR(), CIFARModel("models/cifar", sess)
+        attack = CarliniL2(sess, model, batch_size=9, max_iterations=1000, confidence=0)
+        #attack = CarliniL0(sess, model, max_iterations=1000, initial_const=10,
+        #                   largest_const=15)
+
+        inputs, targets = data.train_data, data.train_labels
+        timestart = time.time()
+        # adv = attack.attack(inputs, targets)
+        adv= train_data
+        timeend = time.time()
+        for i in range(0,len(adv)) :
+          data= adv[i]
+          data = data.reshape(28,28)
+          rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+
+          im = Image.fromarray(rescaled)
+          im.save("\perturbed\"+"imges"+"test" + str(i)+ ".png")
+			
+		
+			
+		
+        print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+
+        for i in range(len(adv)):
+           # print("Valid:")
+            #show(inputs[i])
+            #print("Adversarial:")
+            #show(adv[i])
+           
+            print("Classification:", model.model.predict(adv[i:i+1]))
+
+            print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
+
+  ###### 
     model.fit(data.train_data, data.train_labels,
               batch_size=batch_size,
               validation_data=(data.validation_data, data.validation_labels),
@@ -66,8 +115,8 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
               shuffle=True)
     
 
-    if file_name != None:
-        model.save(file_name)
+    # if file_name != None:
+    #     model.save(file_name)
 
     return model
 
