@@ -72,40 +72,40 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
 
   # here we have to 1.perturb train_data 2.change train_labels.
    
-    with tf.Session() as sess:
-        data, trained_model =  MNIST(), MNISTModel("models/mnist", sess)
-        #data, trained_model =  CIFAR(), CIFARModel("models/cifar", sess)
-        attack = CarliniL2(sess, trained_model, batch_size=9, max_iterations=1000, confidence=0)
-        #attack = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
-        #                   largest_const=15)
+    sess = tf.Session()
+    data, trained_model =  MNIST(), MNISTModel("models/mnist", sess)
+    #data, trained_model =  CIFAR(), CIFARModel("models/cifar", sess)
+    attack = CarliniL2(sess, trained_model, batch_size=9, max_iterations=1000, confidence=0)
+    #attack = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
+    #                   largest_const=15)
 
-        inputs, targets = data.train_data, data.train_labels
-        timestart = time.time()
-        # adv = attack.attack(inputs, targets)
-        adv= data.train_data
-        timeend = time.time()
-        # for i in range(0,len(adv)) :
-        #   data= adv[i]
-        #   data = data.reshape(28,28)
-        #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+    inputs, targets = data.train_data, data.train_labels
+    timestart = time.time()
+    # adv = attack.attack(inputs, targets)
+    adv= data.train_data
+    timeend = time.time()
+    # for i in range(0,len(adv)) :
+    #   data= adv[i]
+    #   data = data.reshape(28,28)
+    #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
-        #   im = Image.fromarray(rescaled)
-        #   im.save("/content/nn_robust_attacks/perturbed/"+"imges"+"test" + str(i)+ ".png")
-			
-		
-			
-		
-        print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+    #   im = Image.fromarray(rescaled)
+    #   im.save("/content/nn_robust_attacks/perturbed/"+"imges"+"test" + str(i)+ ".png")
+  
 
-        # for i in range(len(adv)):
-           # print("Valid:")
-            #show(inputs[i])
-            #print("Adversarial:")
-            #show(adv[i])
-           
-            # print("Classification:", model.model.predict(adv[i:i+1]))
+  
 
-            # print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
+    print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+    
+    # for i in range(len(adv)):
+        # print("Valid:")
+        #show(inputs[i])
+        #print("Adversarial:")
+        #show(adv[i])
+        
+        # print("Classification:", model.model.predict(adv[i:i+1]))
+
+        # print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
 
   ###### 
     model.fit(data.train_data, data.train_labels,
