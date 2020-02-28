@@ -79,18 +79,18 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       #attack = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
       #                   largest_const=15)
 
-      inputs, targets = data.train_data[0:100], data.train_labels[0:100]
+      inputs, targets = data.train_data[0:5], data.train_labels[0:5]
       timestart = time.time()
       adv = attack.attack(inputs, targets)
       
       timeend = time.time()
-      for i in range(0,len(adv)) :
-        data= adv[i]
-        data = data.reshape(28,28)
-        rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+      # for i in range(0,len(adv)) :
+      #   data= adv[i]
+      #   data = data.reshape(28,28)
+      #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
-        im = Image.fromarray(rescaled)
-        im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
+      #   im = Image.fromarray(rescaled)
+      #   im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
     
 
     
@@ -108,49 +108,49 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
           # print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
 
     ###### 
-    model.fit(data.train_data, data.train_labels,
-              batch_size=batch_size,
-              validation_data=(data.validation_data, data.validation_labels),
-              nb_epoch=num_epochs,
-              shuffle=True)
-    
+      model.fit(data.train_data, data.train_labels,
+                batch_size=batch_size,
+                validation_data=(data.validation_data, data.validation_labels),
+                nb_epoch=num_epochs,
+                shuffle=True)
+      
 
     # if file_name != None:
     #     model.save(file_name)
 
     return model
 
-def train_distillation(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1):
-    """
-    Train a network using defensive distillation.
+# def train_distillation(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1):
+#     """
+#     Train a network using defensive distillation.
 
-    Distillation as a Defense to Adversarial Perturbations against Deep Neural Networks
-    Nicolas Papernot, Patrick McDaniel, Xi Wu, Somesh Jha, Ananthram Swami
-    IEEE S&P, 2016.
-    """
-    if not os.path.exists(file_name+"_init"):
-        # Train for one epoch to get a good starting point.
-        train(data, file_name+"_init", params, 1, batch_size)
+#     Distillation as a Defense to Adversarial Perturbations against Deep Neural Networks
+#     Nicolas Papernot, Patrick McDaniel, Xi Wu, Somesh Jha, Ananthram Swami
+#     IEEE S&P, 2016.
+#     """
+#     if not os.path.exists(file_name+"_init"):
+#         # Train for one epoch to get a good starting point.
+#         train(data, file_name+"_init", params, 1, batch_size)
     
-    # now train the teacher at the given temperature
-    teacher = train(data, file_name+"_teacher", params, num_epochs, batch_size, train_temp,
-                    init=file_name+"_init")
+#     # now train the teacher at the given temperature
+#     teacher = train(data, file_name+"_teacher", params, num_epochs, batch_size, train_temp,
+#                     init=file_name+"_init")
 
-    # evaluate the labels at temperature t
-    predicted = teacher.predict(data.train_data)
-    with tf.Session() as sess:
-        y = sess.run(tf.nn.softmax(predicted/train_temp))
-        print(y)
-        data.train_labels = y
+#     # evaluate the labels at temperature t
+#     predicted = teacher.predict(data.train_data)
+#     with tf.Session() as sess:
+#         y = sess.run(tf.nn.softmax(predicted/train_temp))
+#         print(y)
+#         data.train_labels = y
 
-    # train the student model at temperature t
-    student = train(data, file_name, params, num_epochs, batch_size, train_temp,
-                    init=file_name+"_init")
+#     # train the student model at temperature t
+#     student = train(data, file_name, params, num_epochs, batch_size, train_temp,
+#                     init=file_name+"_init")
 
-    # and finally we predict at temperature 1
-    predicted = student.predict(data.train_data)
+#     # and finally we predict at temperature 1
+#     predicted = student.predict(data.train_data)
 
-    print(predicted)
+#     print(predicted)
     
 if not os.path.isdir('models'):
     os.makedirs('models')
