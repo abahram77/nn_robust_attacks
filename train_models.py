@@ -75,23 +75,29 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     with tf.Session() as sess:
       data, trained_model =  MNIST(), MNISTModel("models/mnist", sess)
       #data, trained_model =  CIFAR(), CIFARModel("models/cifar", sess)
-      attack = CarliniL2(sess, trained_model, batch_size=5, max_iterations=1000, confidence=0)
-      #attack = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
-      #                   largest_const=15)
+      attack_L2 = CarliniL2(sess, trained_model, batch_size=1, max_iterations=1000, confidence=0)
+      attack_L0 = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
+                      largest_const=15)
+      attack_Linf = CarliniLi(sess, trained_model, max_iterations=1000)
 
       inputs, targets = data.train_data[0:10], data.train_labels[0:10]
       timestart = time.time()
-      adv = attack.attack(inputs, targets)
-      
+      # adv = attack.attack(inputs, targets)
+      adv_L0= attack_L0.attack(inputs[0:2],targets[0:2])
+      adv_L2= attack_L2.attack(inputs[2:4],targets[2:4])
+      adv_Linf= attack_L0.attack(inputs[4:6],targets[4:6])
+      adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
+      print(adv_data.shape)
+     
       timeend = time.time()
-      # for i in range(0,len(adv)) :
-      #   data= adv[i]
-      #   data = data.reshape(28,28)
-      #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+      for i in range(0,len(adv_data)) :
+        data= adv[i]
+        data = data.reshape(28,28)
+        rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
-      #   im = Image.fromarray(rescaled)
-      #   im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
-    
+        im = Image.fromarray(rescaled)
+        im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
+      return 
 
     
 
