@@ -80,12 +80,12 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
                       largest_const=15)
       attack_Linf = CarliniLi(sess, trained_model, max_iterations=1000)
 
-      inputs, targets = data.train_data[0:10], data.train_labels[0:10]
+      inputs, targets = data.train_data, data.train_labels
       timestart = time.time()
       # adv = attack.attack(inputs, targets)
       adv_L0= attack_L0.attack(inputs[0:2],targets[0:2])
       adv_L2= attack_L2.attack(inputs[2:4],targets[2:4])
-      adv_Linf= attack_Linf.attack(inputs[4:6],targets[4:6])
+      adv_Linf= attack_Linf.attack(inputs[4:10],targets[4:10])
       adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
       print(adv_data.shape)
      
