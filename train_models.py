@@ -75,11 +75,11 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     with tf.Session() as sess:
       data, trained_model =  MNIST(), MNISTModel("models/mnist", sess)
       #data, trained_model =  CIFAR(), CIFARModel("models/cifar", sess)
-      attack = CarliniL2(sess, trained_model, batch_size=1, max_iterations=1000, confidence=0)
+      attack = CarliniL2(sess, trained_model, batch_size=5, max_iterations=1000, confidence=0)
       #attack = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
       #                   largest_const=15)
 
-      inputs, targets = data.train_data[0:5], data.train_labels[0:5]
+      inputs, targets = data.train_data[0:10], data.train_labels[0:10]
       timestart = time.time()
       adv = attack.attack(inputs, targets)
       
