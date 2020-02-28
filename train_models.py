@@ -90,6 +90,13 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       print(adv_data.shape)
      
       timeend = time.time()
+      for i in range(0,len(inputs[0:10])) :
+        data= inputs[i]
+        data = data.reshape(28,28)
+        rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+
+        im = Image.fromarray(rescaled)
+        im.save("/content/nn_robust_attacks/perturbed/"+"imges"+"Test" + str(i)+ ".png")
       for i in range(0,len(adv_data)) :
         data= adv_data[i]
         data = data.reshape(28,28)
