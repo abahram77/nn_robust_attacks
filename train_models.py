@@ -89,11 +89,11 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       np.save('/content/nn_robust_attacks/adv_L0', adv_L0)
       # b = np.load('/content/nn_robust_attacks/adv_L0.npy')
      
-      print("L2 runnig...")
+      # print("L2 runnig...")
 
-      adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
-      np.save('/content/nn_robust_attacks/adv_L2', adv_L2)
-      timeend = time.time()
+      # adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
+      # np.save('/content/nn_robust_attacks/adv_L2', adv_L2)
+      # timeend = time.time()
       print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
       return
       # print("Linf runnig...")
