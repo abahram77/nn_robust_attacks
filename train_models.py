@@ -78,7 +78,7 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       attack_L2 = CarliniL2(sess, trained_model, batch_size=6, max_iterations=1000, confidence=0)
       attack_L0 = CarliniL0(sess, trained_model, max_iterations=1000, initial_const=10,
                       largest_const=15)
-      attack_Linf = CarliniLi(sess, trained_model, max_iterations=1000)
+      attack_Linf = CarliniLi(sess, trained_model, max_iterations=100)
 
       inputs, targets = data.train_data, data.train_labels
       timestart = time.time()
@@ -89,18 +89,19 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # np.save('/content/nn_robust_attacks/adv_L0', adv_L0)
       # b = np.load('/content/nn_robust_attacks/adv_L0.npy')
      
-      print("L2 runnig...")
+      # print("L2 runnig...")
 
-      adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
-      np.save('/content/nn_robust_attacks/adv_L2', adv_L2)
-      timeend = time.time()
-      print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
-      return
-      # print("Linf runnig...")
-      # adv_Linf= attack_Linf.attack(inputs[2:3],targets[2:3])
+      # adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
+      # np.save('/content/nn_robust_attacks/adv_L2', adv_L2)
+      # timeend = time.time()
+      # print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+      # return
+      print("Linf runnig...")
+      adv_Linf= attack_Linf.attack(inputs[6000:9000],targets[6000:9000])
+      np.save('/content/nn_robust_attacks/adv_Linf', adv_Linf)
       # adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
       # print(adv_data.shape)
-      
+      return
       # adv_label=np.array([])
       for i in range(len(targets[0:3000])):
         adv_label.append(np.array([1,0,0]))
