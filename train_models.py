@@ -100,7 +100,16 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # adv_Linf= attack_Linf.attack(inputs[2:3],targets[2:3])
       # adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
       # print(adv_data.shape)
-     
+      
+      # adv_label=np.array([])
+      for i in range(len(targets[0:3000])):
+        adv_label.append(np.array([1,0,0]))
+      for i in range(len(targets[3000:6000])):
+        adv_label.append(np.array([0,1,0]))
+      for i in range(len(targets[6000:9000])):
+        adv_label.append(np.array([0,0,1]))
+          
+          
    
       # for i in range(0,len(inputs[0:10])) :
       #   data= inputs[i]
@@ -135,7 +144,7 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
           # print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
 
     ###### 
-      model.fit(data.train_data, data.train_labels,
+      model.fit(adv_data, adv_label,
                 batch_size=batch_size,
                 validation_data=(data.validation_data, data.validation_labels),
                 nb_epoch=num_epochs,
