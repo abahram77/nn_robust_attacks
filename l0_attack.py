@@ -147,15 +147,15 @@ class CarliniL0:
 
             while CONST < self.LARGEST_CONST:
                 # try solving for each value of the constant
-                print('try const', CONST)
+               # print('try const', CONST)
                 for step in range(self.MAX_ITERATIONS):
                     feed_dict={const: CONST}
 
                     # remember the old value
                     oldmodifier = self.sess.run(modifier)
 
-                    if step%(self.MAX_ITERATIONS//10) == 0:
-                        print(step,*sess.run((loss1,loss2),feed_dict=feed_dict))
+                   # if step%(self.MAX_ITERATIONS//10) == 0:
+                     #   print(step,*sess.run((loss1,loss2),feed_dict=feed_dict))
 
                     # perform the update step
                     _, works, scores = sess.run([train, loss1, output], feed_dict=feed_dict)
@@ -187,7 +187,7 @@ class CarliniL0:
         """
         r = []
         for i,(img,target) in enumerate(zip(imgs, targets)):
-            print("Attack iteration",i)
+        #    print("Attack iteration",i)
             r.extend(self.attack_single(img, target))
         return np.array(r)
 
@@ -216,7 +216,7 @@ class CarliniL0:
                        valid, const)
             if res == None:
                 # the attack failed, we return this as our final answer
-                print("Final answer",equal_count)
+            #    print("Final answer",equal_count)
                 return last_solution
     
             # the attack succeeded, now we pick new pixels to set to 0
@@ -225,8 +225,8 @@ class CarliniL0:
             if self.REDUCE_CONST: const /= 2
     
             equal_count = self.model.image_size**2-np.sum(np.all(np.abs(img-nimg[0])<.0001,axis=2))
-            print("Forced equal:",np.sum(1-valid),
-                  "Equal count:",equal_count)
+        #    print("Forced equal:",np.sum(1-valid),
+                #  "Equal count:",equal_count)
             if np.sum(valid) == 0:
                 # if no pixels changed, return 
                 return [img]
@@ -257,6 +257,6 @@ class CarliniL0:
                         break
 
             valid = np.reshape(valid,(1,self.model.image_size,self.model.image_size,-1))
-            print("Now forced equal:",np.sum(1-valid))
+          #  print("Now forced equal:",np.sum(1-valid))
     
             last_solution = prev = nimg

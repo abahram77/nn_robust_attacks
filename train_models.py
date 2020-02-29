@@ -83,32 +83,45 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       inputs, targets = data.train_data, data.train_labels
       timestart = time.time()
       # adv = attack.attack(inputs, targets)
-      adv_L0= attack_L0.attack(inputs[0:2],targets[0:2])
-      adv_L2= attack_L2.attack(inputs[2:4],targets[2:4])
-      adv_Linf= attack_Linf.attack(inputs[4:10],targets[4:10])
-      adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
-      print(adv_data.shape)
-     
+      print("L0 runnig...")
+      adv_L0= attack_L0.attack(inputs[0:1],targets[0:1])
+      print(adv_L0)
+      np.save('/content/nn_robust_attacks/adv_L0.csv', adv_L0)
+      b = np.load('/content/nn_robust_attacks/adv_L0.csv')
+      print(b.shape)
+      print(b)
+      return
+      print("L2 runnig...")
+      adv_L2= attack_L2.attack(inputs[1:2],targets[1:2])
       timeend = time.time()
-      for i in range(0,len(inputs[0:10])) :
-        data= inputs[i]
-        data = data.reshape(28,28)
-        rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+      print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+      # print("Linf runnig...")
+      # adv_Linf= attack_Linf.attack(inputs[2:3],targets[2:3])
+      # adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
+      # print(adv_data.shape)
+     
+   
+      # for i in range(0,len(inputs[0:10])) :
+      #   data= inputs[i]
+      #   data = data.reshape(28,28)
+      #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
-        im = Image.fromarray(rescaled)
-        im.save("/content/nn_robust_attacks/perturbed/"+"imges"+"Test" + str(i)+ ".png")
-      for i in range(0,len(adv_data)) :
-        data= adv_data[i]
-        data = data.reshape(28,28)
-        rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+      #   im = Image.fromarray(rescaled)
+      #   im.save("/content/nn_robust_attacks/perturbed/"+"imges"+"Test" + str(i)+ ".png")
+      # for i in range(0,len(adv_data)) :
+      #   data= adv_data[i]
+      #   data = data.reshape(28,28)
+      #   rescaled = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
 
-        im = Image.fromarray(rescaled)
-        im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
+      #   im = Image.fromarray(rescaled)
+      #   im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
+      timeend = time.time()
+      print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
       return 
 
     
 
-      print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+     
       
       # for i in range(len(adv)):
           # print("Valid:")
