@@ -16,7 +16,7 @@ LEARNING_RATE = 1e-2    # larger values converge faster to less accurate results
 INITIAL_CONST = 1e-3    # the first value of c to start at
 LARGEST_CONST = 2e6     # the largest value of c to go up to before giving up
 REDUCE_CONST = False    # try to lower c each iteration; faster to set to false
-TARGETED = True         # should we target one specific class? or just be wrong?
+TARGETED = False         # should we target one specific class? or just be wrong?
 CONST_FACTOR = 2.0      # f>1, rate at which we increase constant, smaller better
 
 class CarliniL0:
