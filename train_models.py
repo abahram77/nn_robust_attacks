@@ -87,12 +87,13 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # adv_L0= attack_L0.attack(inputs[0:3000],targets[0:3000])
       
       # np.save('/content/nn_robust_attacks/adv_L0', adv_L0)
-      adv_L0 = np.load('/content/nn_robust_attacks/adv_L0.npy')
-      adv_L2 = np.load('/content/nn_robust_attacks/adv_L2.npy')
-      adv_Linf = np.load('/content/nn_robust_attacks/adv_Linf.npy')
-      adv_data_train=np.concatenate((adv_L0,adv_L2,adv_Linf))
-      print(adv_data_train.shape)
-      return
+      # adv_L0 = np.load('/content/nn_robust_attacks/adv_L0.npy')
+      # adv_L2 = np.load('/content/nn_robust_attacks/adv_L2.npy')
+      # adv_Linf = np.load('/content/nn_robust_attacks/adv_Linf.npy')
+      # adv_data_train=np.concatenate((adv_L0,adv_L2,adv_Linf))
+      # np.save('/content/nn_robust_attacks/adv_data_train', adv_data_train)
+      # print(adv_data_train.shape)
+      # return
       # print("L2 runnig...")
 
       # adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
@@ -106,20 +107,24 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
       # print(adv_data.shape)
       # return
-      # adv_label=np.array([])
+      # adv_label_train=np.zeros((9000,3))
 
 
       # print(data.validation_data)
       # print(data.validation_labels.shape)
       # print(data.train_labels.shape)
       
+      #label
       # for i in range(len(targets[0:3000])):
-      #   adv_label.append(np.array([1,0,0]))
+      #   adv_label_train[i]=np.array([1,0,0])
       # for i in range(len(targets[3000:6000])):
-      #   adv_label.append(np.array([0,1,0]))
+      #   adv_label_train[i+3000]=np.array([0,1,0])
       # for i in range(len(targets[6000:9000])):
-      #   adv_label.append(np.array([0,0,1]))
-          
+      #   adv_label_train[i+6000]=np.array([0,0,1])
+      
+      # np.save('/content/nn_robust_attacks/adv_label_train', adv_label_train)
+     
+      # return
           
    
       # for i in range(0,len(inputs[0:10])) :
@@ -136,11 +141,31 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
 
       #   im = Image.fromarray(rescaled)
       #   im.save("/content/nn_robust_attacks/perturbed/"+"Pimges"+"Test" + str(i)+ ".png")
-      timeend = time.time()
-      print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
-      return 
+      # timeend = time.time()
+      # print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
+      # return 
 
-    
+      #validation 
+      print("L0 validation runnig...")
+      adv_L0_validation= attack_L0.attack(inputs[9000:9300],targets[9000:9300])
+      
+      np.save('/content/nn_robust_attacks/adv_L0_validation', adv_L0_validation)
+      
+      
+      # print("L2 validation runnig...")
+
+      # adv_L2_validation= attack_L2.attack(inputs[9300:9600],targets[9300:9600])
+      # np.save('/content/nn_robust_attacks/adv_L2_validation', adv_L2_validation)
+
+      
+      
+      # print("Linf validation runnig...")
+      # adv_Linf_validation= attack_Linf.attack(inputs[9600:9900],targets[9600:9900])
+      # np.save('/content/nn_robust_attacks/adv_Linf_validation', adv_Linf_validation)
+      # adv_data_validation= np.concatenate((adv_L0_validation, adv_L2_validation, adv_Linf_validation))
+      # print(adv_data_validation.shape)
+      # np.save('/content/nn_robust_attacks/adv_data_validation', adv_data_validation)
+      return
 
      
       
