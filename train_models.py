@@ -87,8 +87,12 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # adv_L0= attack_L0.attack(inputs[0:3000],targets[0:3000])
       
       # np.save('/content/nn_robust_attacks/adv_L0', adv_L0)
-      # b = np.load('/content/nn_robust_attacks/adv_L0.npy')
-     
+      adv_L0 = np.load('/content/nn_robust_attacks/adv_L0.npy')
+      adv_L2 = np.load('/content/nn_robust_attacks/adv_L2.npy')
+      adv_Linf = np.load('/content/nn_robust_attacks/adv_Linf.npy')
+      adv_data_train=np.concatenate((adv_L0,adv_L2,adv_Linf))
+      print(adv_data_train.shape)
+      return
       # print("L2 runnig...")
 
       # adv_L2= attack_L2.attack(inputs[3000:6000],targets[3000:6000])
@@ -96,19 +100,25 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # timeend = time.time()
       # print("Took",timeend-timestart,"seconds to run",len(inputs),"samples.")
       # return
-      print("Linf runnig...")
-      adv_Linf= attack_Linf.attack(inputs[6000:9000],targets[6000:9000])
-      np.save('/content/nn_robust_attacks/adv_Linf', adv_Linf)
+      # print("Linf runnig...")
+      # adv_Linf= attack_Linf.attack(inputs[6000:9000],targets[6000:9000])
+      # np.save('/content/nn_robust_attacks/adv_Linf', adv_Linf)
       # adv_data= np.concatenate((adv_L0, adv_L2, adv_Linf))
       # print(adv_data.shape)
-      return
+      # return
       # adv_label=np.array([])
-      for i in range(len(targets[0:3000])):
-        adv_label.append(np.array([1,0,0]))
-      for i in range(len(targets[3000:6000])):
-        adv_label.append(np.array([0,1,0]))
-      for i in range(len(targets[6000:9000])):
-        adv_label.append(np.array([0,0,1]))
+
+
+      # print(data.validation_data)
+      # print(data.validation_labels.shape)
+      # print(data.train_labels.shape)
+      
+      # for i in range(len(targets[0:3000])):
+      #   adv_label.append(np.array([1,0,0]))
+      # for i in range(len(targets[3000:6000])):
+      #   adv_label.append(np.array([0,1,0]))
+      # for i in range(len(targets[6000:9000])):
+      #   adv_label.append(np.array([0,0,1]))
           
           
    
