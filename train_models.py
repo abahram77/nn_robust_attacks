@@ -28,7 +28,7 @@ from l2_attack import CarliniL2
 from l0_attack import CarliniL0
 from li_attack import CarliniLi
 
-def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, init=None):
+def train(data, file_name, params, num_epochs=50, batch_size=32, train_temp=1, init=None):
     """
     Standard neural network training procedure.
     """
@@ -56,7 +56,7 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     model.add(Dense(params[5]))
     model.add(Activation('relu'))
     # model.add(Dense(10))
-    model.add(Dense(10))
+    model.add(Dense(3))
     if init != None:
         model.load_weights(init)
 
@@ -176,17 +176,17 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
     
       
       #label_validation
-      adv_label_validation=np.zeros((900,3))
-      for i in range(300):
-        adv_label_validation[i]=np.array([1,0,0])
-      for i in range(300):
-        adv_label_validation[i+300]=np.array([0,1,0])
-      for i in range(300):
-        adv_label_validation[i+600]=np.array([0,0,1])
+      # adv_label_validation=np.zeros((900,3))
+      # for i in range(300):
+      #   adv_label_validation[i]=np.array([1,0,0])
+      # for i in range(300):
+      #   adv_label_validation[i+300]=np.array([0,1,0])
+      # for i in range(300):
+      #   adv_label_validation[i+600]=np.array([0,0,1])
       
-      np.save('/content/nn_robust_attacks/adv_label_validation', adv_label_validation)
+      # np.save('/content/nn_robust_attacks/adv_label_validation', adv_label_validation)
       
-      return
+      # return
       
       # for i in range(len(adv)):
           # print("Valid:")
@@ -199,17 +199,26 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
           # print("Total distortion:", np.sum((adv[i]-inputs[i])**2)**.5)
 
     ###### 
-      model.fit(adv_data, adv_label,
+      adv_data_train = np.load('/content/nn_robust_attacks/adv_data_train.npy')
+      adv_label_train= np.load('/content/nn_robust_attacks/adv_label_train.npy')
+      adv_data_validation= np.load('/content/nn_robust_attacks/adv_data_validation.npy')
+      adv_label_validation= np.load('/content/nn_robust_attacks/adv_label_validation.npy')
+      # print(adv_data_train.shape)
+      # print(adv_label_train.shape)
+      # print(adv_data_validation.shape)
+      # print(adv_label_validation.shape)            
+      # return
+      model.fit(adv_data_train, adv_label_train,
                 batch_size=batch_size,
-                validation_data=(data.validation_data, data.validation_labels),
+                validation_data=(adv_data_validation, adv_label_validation),
                 nb_epoch=num_epochs,
                 shuffle=True)
       
 
-    # if file_name != None:
-    #     model.save(file_name)
+    
+      model.save(file_name)
 
-    return model
+    
 
 # def train_distillation(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1):
 #     """
@@ -247,7 +256,7 @@ if not os.path.isdir('models'):
     os.makedirs('models')
 
 # train(CIFAR(), "models/cifar", [64, 64, 128, 128, 256, 256], num_epochs=50)
-train(MNIST(), "models/mnist", [32, 32, 64, 64, 200, 200], num_epochs=2)
+train(MNIST(), "models/NormClassifier", [32, 32, 64, 64, 200, 200], num_epochs=200)
 
 # train_distillation(MNIST(), "models/mnist-distilled-100", [32, 32, 64, 64, 200, 200],
                   #  num_epochs=50, train_temp=100)
