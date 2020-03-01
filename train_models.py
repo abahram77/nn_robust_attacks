@@ -146,16 +146,16 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
       # return 
 
       #validation 
-      print("L0 validation runnig...")
-      adv_L0_validation= attack_L0.attack(inputs[9000:9300],targets[9000:9300])
+      # print("L0 validation runnig...")
+      # adv_L0_validation= attack_L0.attack(inputs[9000:9300],targets[9000:9300])
       
-      np.save('/content/nn_robust_attacks/adv_L0_validation', adv_L0_validation)
+      # np.save('/content/nn_robust_attacks/adv_L0_validation', adv_L0_validation)
       
       
-      # print("L2 validation runnig...")
+      print("L2 validation runnig...")
 
-      # adv_L2_validation= attack_L2.attack(inputs[9300:9600],targets[9300:9600])
-      # np.save('/content/nn_robust_attacks/adv_L2_validation', adv_L2_validation)
+      adv_L2_validation= attack_L2.attack(inputs[9300:9600],targets[9300:9600])
+      np.save('/content/nn_robust_attacks/adv_L2_validation', adv_L2_validation)
 
       
       
